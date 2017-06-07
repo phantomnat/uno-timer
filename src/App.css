@@ -1,0 +1,19 @@
+.App {
+  height: 100vh;
+  width: 100%;
+  width: 100vw;
+}
+
+.hidden-content {
+  color: #fff;
+}
+.number {
+  text-align: center;
+  font-size: 80vw;
+  line-height: 0.2;
+}
+
+.btn-setting {
+  position: absolute;
+  right: 2vw;
+}
