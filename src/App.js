@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
-import Sound from 'react-sound'
+import $ from 'jquery'
 import injectTapEventPlugin from "react-tap-event-plugin"
 injectTapEventPlugin()
 
@@ -23,6 +23,7 @@ class App extends Component {
     }
     this.debouncingTimer = 0
     this.timer = 0
+    this.audioAlarm = null
 
     this.onPageClick = this.onPageClick.bind(this)
     this.onSettingButtonClick = this.onSettingButtonClick.bind(this)
@@ -35,12 +36,32 @@ class App extends Component {
     this.onDebouncingEnd = this.onDebouncingEnd.bind(this)
   }
 
+
+  componentDidMount() {
+    // console.log('componentDidMount')
+    const $a = $('#audio-alert')
+    // console.log(this.audioAlarm)
+    if ($a && typeof $a[0] !== 'undefined' && 'play' in $a[0]) {
+      this.audioAlarm = $('#audio-alert')[0]
+      // console.log(this.audioAlarm)
+    }
+  }
+
+  // componentDidUpdate() {
+  //   console.log('componentDidUpdate')
+  //   console.log($('#audio-alert'))
+  // }
+
   resetTimer() {
+    this.audioAlarm.pause()
+    this.audioAlarm.currentTime = 0
+
     this.setState({
       seconds: this.timerDuration,
       playSound: false,
       status: this.status.stop,
     })
+
   }
 
   startTimer() {
@@ -74,6 +95,7 @@ class App extends Component {
       this.timer = 0
       // console.log('Time expired!')
       // console.log('play sound!')
+      this.audioAlarm.play()
       this.setState({
         playSound: true,
         status: this.status.timeExpired,
@@ -121,20 +143,10 @@ class App extends Component {
   }
 
   render() {
-    let sound
-    if (this.state.playSound) {
-      sound = (
-        <Sound
-          url="assets/iphone_alarm.ogg"
-          playStatus={Sound.status.PLAYING}
-        />
-      )
-    }
     return (
       <div className={`App`} onClick={this.onPageClick}>
         <p className={`hidden-content`}>.</p>
         <h1 className={`number`}>{this.state.seconds}</h1>
-        {sound}
         <button className={`btn-setting`} disabled={this.state.status !== this.status.stop} onClick={this.onSettingButtonClick}>+- Time</button>
       </div>
     )
